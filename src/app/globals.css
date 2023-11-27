@@ -1,4 +1,8 @@
-@tailwind base;
+/** 
+ * Tailwind removes all styling, includling the headings, so disabling this.
+ * You can use the prose plugin for tailwind for better styling.
+ */
+/* @tailwind base; */
 @tailwind components;
 @tailwind utilities;
 
@@ -16,12 +20,3 @@
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
