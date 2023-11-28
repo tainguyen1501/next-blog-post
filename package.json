@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@mdxeditor/editor": "^1.11.2",
+    "date-fns": "^2.30.0",
+    "mime": "^3.0.0",
     "mongodb": "^6.3.0",
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@types/mime": "^3.0.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

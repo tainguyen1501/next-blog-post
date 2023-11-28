@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   if (sortBy)
     query.sort = {
       by: sortBy,
-      desc: (request.nextUrl.searchParams.get("desc") || "false") === "true",
+      desc: (request.nextUrl.searchParams.get("desc")?.toLocaleLowerCase() || "false") === "true",
     };
   const result = await repo.find("my-magic-collection", query);
   return NextResponse.json(result);
