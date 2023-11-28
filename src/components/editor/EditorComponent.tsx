@@ -1,34 +1,19 @@
 'use client'
 
-import { MDXEditor, MDXEditorMethods, headingsPlugin, toolbarPlugin } from "@mdxeditor/editor"
-import {FC} from 'react'
 import {
-  AdmonitionDirectiveDescriptor,
-  UndoRedo,
-  codeBlockPlugin,
-  codeMirrorPlugin,
-  diffSourcePlugin,
-  directivesPlugin,
-  frontmatterPlugin,
-  imagePlugin,
-  linkDialogPlugin,
-  linkPlugin,
-  listsPlugin,
-  markdownShortcutPlugin,
-  quotePlugin,
-  sandpackPlugin,
-  tablePlugin,
-  thematicBreakPlugin,
-  Separator,
-  BlockTypeSelect,
-  BoldItalicUnderlineToggles,
-  CreateLink,
-  DiffSourceToggleWrapper,
-  InsertImage,
-  ListsToggle,
-  KitchenSinkToolbar,
-  SandpackConfig
+    KitchenSinkToolbar, MDXEditor, MDXEditorMethods, SandpackConfig, codeBlockPlugin,
+    codeMirrorPlugin,
+    diffSourcePlugin, frontmatterPlugin, headingsPlugin, imagePlugin,
+    linkDialogPlugin,
+    linkPlugin,
+    listsPlugin,
+    markdownShortcutPlugin,
+    quotePlugin,
+    sandpackPlugin,
+    tablePlugin,
+    thematicBreakPlugin, toolbarPlugin
 } from "@mdxeditor/editor"
+import { FC, useRef } from 'react'
 
 const defaultSnippetContent = `
 export default function App() {
@@ -40,7 +25,6 @@ export default function App() {
   );
 }
 `.trim()
-const dataCode = ''
 interface EditorProps {
   markdown: string
   editorRef?: React.MutableRefObject<MDXEditorMethods | null>
@@ -81,7 +65,7 @@ export const virtuosoSampleSandpackConfig: SandpackConfig = {
         '@ngneat/falso': 'latest'
       },
       files: {
-        '/data.ts': dataCode
+        '/data.ts': ''
       }
     }
   ]
@@ -105,7 +89,14 @@ async function imageUploadHandler(image: File) {
 }
 
 const Editor: FC<EditorProps> = ({ markdown, editorRef }) => {
-  return <MDXEditor ref={editorRef} markdown={markdown} 
+
+    const ref = useRef<MDXEditorMethods>(null)
+  return <>
+     <button onClick={() => console.log(ref?.current?.getMarkdown())}>Get markdown</button>
+     <button onClick={() => ref?.current?.setMarkdown('new markdown')}>Set new markdown</button>
+  <MDXEditor
+   ref={ref}
+    markdown={markdown} 
   plugins={[
     toolbarPlugin({ toolbarContents: () => <><KitchenSinkToolbar /></>}),
     listsPlugin(),
@@ -135,10 +126,8 @@ const Editor: FC<EditorProps> = ({ markdown, editorRef }) => {
       viewMode: 'rich-text', diffMarkdown: 'boo'}),
     markdownShortcutPlugin()
   ]}
-
-
-
 />
+  </>
 }
 
 export default Editor
