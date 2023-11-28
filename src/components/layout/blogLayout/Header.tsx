@@ -1,14 +1,18 @@
-
-Header.propTypes = {};
-
-function Header() {
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+async function Header() {
+  const session = await getServerSession();
+//   console.log("header session", session);
+//   if (!session) {
+//     console.log("header no session", session);
+//   } else console.log("header has session", session);
+//   if (!session) {
+//     redirect("/test");
+//   }
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a
-          href="/"
-          className="flex items-center space-x-3 rtl:space-x-reverse"
-        >
+        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
             Wixo
           </span>
