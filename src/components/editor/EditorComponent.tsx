@@ -76,16 +76,23 @@ export const virtuosoSampleSandpackConfig: SandpackConfig = {
 */
 async function imageUploadHandler(image: File) {
   const formData = new FormData()
-  formData.append('image', image)
-  // send the file to your server and return 
-  // the URL of the uploaded image in the response
-  const response = await fetch('/uploads/new', { 
-      method: 'POST', 
-      body: formData 
-  })
-  const json = (await response.json()) as { url: string }
-  // return json.url
-  return 'https://picsum.photos/200'
+  formData.append('file', image)
+  try {
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      console.error("something went wrong, check your console.");
+      return '';
+    }
+    const data: { fileUrl: string } = await res.json();
+    return data.fileUrl
+  } catch (error) {
+    console.error("something went wrong, check your console.");
+  }
+  return ''
 }
 
 const Editor: FC<EditorProps> = ({ markdown, editorRef }) => {
@@ -105,16 +112,6 @@ const Editor: FC<EditorProps> = ({ markdown, editorRef }) => {
     linkPlugin(),
     linkDialogPlugin(),
     imagePlugin({ imageUploadHandler }),
-    // imagePlugin({ 
-    //   imageUploadHandler: (image) => {
-    //     console.log(image)
-    //     return imageUploadHandler(image)//Promise.resolve('https://picsum.photos/200/300')
-    //   },
-    //   // imageAutocompleteSuggestions: [
-    //   //   'https://picsum.photos/200/300',
-    //   //   'https://picsum.photos/200',
-    //   // ]
-    // }),
     tablePlugin(),
     thematicBreakPlugin(),
     frontmatterPlugin(),

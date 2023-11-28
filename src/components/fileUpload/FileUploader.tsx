@@ -37,7 +37,7 @@ export default function FileUploader() {
       }
 
       const data: { fileUrl: string } = await res.json();
-       
+      console.log('data.fileUrl', data.fileUrl)
       setImageUrl(data.fileUrl);
     } catch (error) {
       console.error("something went wrong, check your console.");

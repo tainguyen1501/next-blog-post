@@ -38,11 +38,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    // const filename = `${file.name.replace(
-    //   /\.[^/.]+$/,
-    //   ""
-    // )}-${uniqueSuffix}.${mime.getExtension(file.type)}`;
-    const filename = `${'filename'}-${uniqueSuffix}.${mime.getExtension(file.type)}`;
+    const newFile : any = file
+    const filename = `${newFile.name.replace(
+      /\.[^/.]+$/,
+      ""
+    )}-${uniqueSuffix}.${mime.getExtension(file.type)}`;
     await writeFile(`${uploadDir}/${filename}`, buffer);
     return NextResponse.json({ fileUrl: `${relativeUploadDir}/${filename}` });
   } catch (e) {
