@@ -2,7 +2,6 @@
 
 import api from "@/apis";
 import "@/app/style.css";
-import service from "@/services";
 import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
@@ -25,25 +24,37 @@ export default function PostPage() {
     queryFn: async () => await api.post.getById(id),
   });
 
+  const onSaveContent = async (content: string) => {
+    console.log("post", post);
+    console.log("sagedsfdsf", content);
+
+    const res = await fetch("/api/posts", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...post, id: post._id, content: content }),
+    });
+
+    if (res.status === 200) {
+      console.log(await res.json());
+    } else {
+    }
+  };
   return (
     <div>
       <div className="min-h-screen max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16">
         {isLoading ? (
           <div>loading... </div>
         ) : post ? (
-          //   <div>
-          //     <div className="justify-center items-center text-center my-8">
-          //       <p className="text-4xl font-semibold">{post.title}</p>
-          //     </div>
-          //     {post.shortContent}
-          //   </div>
           <div className="container" style={{ position: "relative" }}>
             <div className="flex min-h-screen flex-col items-center">
-              {/* <input onChange={(e) => handleOnchangeText(e)} /> */}
               <div>
-                Editor:
                 <Suspense fallback={null}>
-                  <EditorComp markdown={post.content || ""} />
+                  <EditorComp
+                    markdown={post.content || ""}
+                    onSave={onSaveContent}
+                  />
                 </Suspense>
               </div>
             </div>

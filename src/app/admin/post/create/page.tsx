@@ -30,7 +30,7 @@ export default function CreatePostPage() {
         <div>
           Editor:
           <Suspense fallback={null}>
-            <EditorComp markdown={markdown} onChange={editorOnChangeHandle} />
+            <EditorComp markdown={markdown} onChange={editorOnChangeHandle} onSave={() => {}}/>
           </Suspense>
         </div>
       </div>

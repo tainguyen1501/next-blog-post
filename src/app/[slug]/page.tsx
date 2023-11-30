@@ -21,7 +21,7 @@ export default async function PostPage({
             <div className="justify-center items-center text-center my-8">
               <p className="text-4xl font-semibold">{post.title}</p>
             </div>
-            {post.shortContent}
+            {post.content}
           </div>
         ) : (
           <p>not found post</p>

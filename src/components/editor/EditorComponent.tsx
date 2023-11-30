@@ -35,6 +35,7 @@ export default function App() {
 `.trim();
 interface EditorProps {
   markdown: string;
+  onSave: (content: string) => void;
   onChange?: (arg: string) => void;
 }
 export const virtuosoSampleSandpackConfig: SandpackConfig = {
@@ -102,60 +103,55 @@ async function imageUploadHandler(image: File) {
   }
   return "";
 }
-const handleSaveContent = async () => {
-  console.log('sage')
-}
-const Editor: FC<EditorProps> = ({ markdown, onChange }) => {
+
+const Editor: FC<EditorProps> = ({ markdown, onChange, onSave }) => {
   const ref = useRef<MDXEditorMethods>(null);
   return (
-    <>
-      <button onClick={() => console.log(ref?.current?.getMarkdown())}>
-        Get markdown
-      </button>
-      <button onClick={() => ref?.current?.setMarkdown("new markdown")}>
-        Set new markdown
-      </button>
-      <MDXEditor
-        ref={ref}
-        markdown={markdown}
-        plugins={[
-          toolbarPlugin({
-            toolbarContents: () => (
-              <>
-                <KitchenSinkToolbar />
-                <button className="btn btn-primary" onClick={handleSaveContent}>save</button>
-              </>
-            ),
-          }),
-          listsPlugin(),
-          quotePlugin(),
-          headingsPlugin({ allowedHeadingLevels: [1, 2, 3] }),
-          linkPlugin(),
-          linkDialogPlugin(),
-          imagePlugin({ imageUploadHandler }),
-          tablePlugin(),
-          thematicBreakPlugin(),
-          frontmatterPlugin(),
-          codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
-          sandpackPlugin({ sandpackConfig: virtuosoSampleSandpackConfig }),
-          codeMirrorPlugin({
-            codeBlockLanguages: {
-              js: "JavaScript",
-              css: "CSS",
-              txt: "text",
-              tsx: "TypeScript",
-            },
-          }),
-          // directivesPlugin({ directiveDescriptors: [YoutubeDirectiveDescriptor, AdmonitionDirectiveDescriptor] }),
-          diffSourcePlugin({
-            viewMode: "rich-text",
-            diffMarkdown: "boo",
-          }),
-          markdownShortcutPlugin(),
-        ]}
-        onChange={onChange}
-      />
-    </>
+    <MDXEditor
+      ref={ref}
+      markdown={markdown}
+      plugins={[
+        toolbarPlugin({
+          toolbarContents: () => (
+            <>
+              <KitchenSinkToolbar />
+              <button
+                className="btn btn-primary"
+                onClick={() => onSave(ref?.current?.getMarkdown() || "")}
+              >
+                save
+              </button>
+            </>
+          ),
+        }),
+        listsPlugin(),
+        quotePlugin(),
+        headingsPlugin({ allowedHeadingLevels: [1, 2, 3] }),
+        linkPlugin(),
+        linkDialogPlugin(),
+        imagePlugin({ imageUploadHandler }),
+        tablePlugin(),
+        thematicBreakPlugin(),
+        frontmatterPlugin(),
+        codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
+        sandpackPlugin({ sandpackConfig: virtuosoSampleSandpackConfig }),
+        codeMirrorPlugin({
+          codeBlockLanguages: {
+            js: "JavaScript",
+            css: "CSS",
+            txt: "text",
+            tsx: "TypeScript",
+          },
+        }),
+        // directivesPlugin({ directiveDescriptors: [YoutubeDirectiveDescriptor, AdmonitionDirectiveDescriptor] }),
+        diffSourcePlugin({
+          viewMode: "rich-text",
+          diffMarkdown: "boo",
+        }),
+        markdownShortcutPlugin(),
+      ]}
+      onChange={onChange}
+    />
   );
 };
 
