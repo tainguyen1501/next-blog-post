@@ -15,6 +15,7 @@ export interface PostModel {
   metaKeywords?: string;
   metaDescription?: string;
   content?: string;
+  slug: string;
   shortContent?: string;
   image?: string;
 }

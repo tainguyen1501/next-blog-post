@@ -1,7 +1,13 @@
-'use client'
+"use client";
 
 import React from "react";
-function Header() {
+import { useSession, signOut } from "next-auth/react";
+export interface HeaderProps {
+  handleCreatePost: () => void;
+}
+function Header({}) {
+  const { data: session, status: sessionStatus } = useSession();
+  console.log(session)
   return (
     <nav className="bg-white border-b border-gray-200 fixed z-30 w-full">
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -41,15 +47,10 @@ function Header() {
               </svg>
             </button>
             <a
-              href="#"
+              href="/"
               className="text-xl font-bold flex items-center lg:ml-2.5"
             >
-              <img
-                src="https://demo.themesberg.com/windster/images/logo.svg"
-                className="h-6 mr-2"
-                alt="Windster Logo"
-              />
-              <span className="self-center whitespace-nowrap">Windster</span>
+              <span className="self-center whitespace-nowrap">Wixo</span>
             </a>
             <form action="#" method="GET" className="hidden lg:block lg:pl-32">
               <label className="sr-only">Search</label>
@@ -99,12 +100,10 @@ function Header() {
               </svg>
             </button>
             <button
-              onClick={() => {
-                window.location.href = "/admin/post/create";
-              }}
+              onClick={() => signOut()}
               className="hidden sm:inline-flex ml-5 rounded-md bg-indigo-600 text-white shadow-sm hover:bg-indigo-500  font-medium text-sm px-5 py-2.5 text-center items-center mr-3"
             >
-              Create new post
+              Sign out
             </button>
           </div>
         </div>

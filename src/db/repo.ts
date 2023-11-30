@@ -1,6 +1,7 @@
 import { IBaseQueryModel } from "@/models/common";
 import clientPromise from "./mongodb";
 import { ObjectId } from "mongodb";
+import utils from "@/utils/utils";
 
 const repo = {
   getClient: async () => {
@@ -34,6 +35,15 @@ const repo = {
   insert: async (collectionName: string, data: any) => {
     const client = await repo.getClient();
     const collection = client.collection(collectionName);
+
+    let random = Math.floor(Math.random() * 5);
+    if (random === 0) random = 1;
+    //todo: check slug  existing ...
+    data = {
+      ...data,
+      image: `/images/banner${random}.webp`,
+      slug: utils.string.slugify(data.title),
+    };
     return await collection.insertOne(data); //acknowledged, insertedId
   },
   update: async (collectionName: string, data: any) => {

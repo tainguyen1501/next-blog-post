@@ -5,6 +5,8 @@ import { useState } from "react";
 import CreateOrUpdatePost from "./CreateOrUpdatePost";
 import { useQuery } from "@tanstack/react-query";
 import CardPost from "@/components/cards/post/CardPost";
+import CardSkeleton from "@/components/cards/skeleton/CardSkeleton";
+import api from "@/apis";
 function PostContent() {
   const [showModal, setShowModal] = useState(false);
   const [createOrUpdatePostData, setCreateOrUpdatePostData] = useState({
@@ -77,30 +79,12 @@ function PostContent() {
     }
   };
 
-  const fetchPosts = async () => {
-    try {
-      const res = await fetch("/api/posts", {
-        method: "GET",
-      });
-
-      if (res.status === 200) {
-        const data = await res.json();
-        console.log(data);
-        return data;
-      }
-      return null;
-    } catch (error) {
-      return null;
-    }
-  };
-
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ["fetch-posts"],
-    queryFn: async () => await fetchPosts(),
+    queryFn: async () => await api.post.get(),
   });
 
   const handleSelectedPost = (post: PostModel) => {
-    console.log(post);
     setCreateOrUpdatePostData({ ...post });
     setShowModal(true);
   };
@@ -119,19 +103,38 @@ function PostContent() {
   };
   return (
     <div>
-      <div className="flex items-center justify-between mb-4 min-h-[500px]">
-        <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-10">
-          {data &&
-            data.map((post: PostModel) => (
-              <CardPost
-                key={post._id}
-                post={post}
-                handleSelectedPost={handleSelectedPost}
-              />
-            ))}
+      <div className="container">
+        <div>
+          <div className="py-4">
+            <button
+              onClick={() => handleCreateNewPost()}
+              className="hidden sm:inline-flex rounded-md bg-indigo-600 text-white shadow-sm hover:bg-indigo-500  font-medium text-sm px-5 py-2.5 text-center items-center mr-3"
+            >
+              Create new post
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-10">
+            {isLoading ? (
+              Array.from(Array(10).keys()).map((i) => (
+                <CardSkeleton key={i} className="w-full" />
+              ))
+            ) : error ? (
+              <p>Error</p>
+            ) : (
+              <>
+                {data &&
+                  data.map((post: PostModel) => (
+                    <CardPost
+                      key={post._id}
+                      post={post}
+                      handleSelectedPost={handleSelectedPost}
+                    />
+                  ))}
+              </>
+            )}
+          </div>
         </div>
       </div>
-      <button onClick={() => handleCreateNewPost()}>Create new post</button>
       <CreateOrUpdatePost
         show={showModal}
         handleClose={handleCloseModal}

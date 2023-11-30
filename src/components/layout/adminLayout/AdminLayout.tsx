@@ -1,8 +1,7 @@
+import "@/app/globals.css";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React from "react";
-import "@/app/globals.css";
-import Sidebar from "./Sidebar";
 import Header from "./Header";
 export default async function AdminLayout({
   children,
@@ -16,10 +15,7 @@ export default async function AdminLayout({
   return (
     <div>
       <Header />
-      <div className="max-w-screen-xl mx-auto  pt-16 lg:pt-24">
-      {children}
-      </div>
-   
+      <div className="max-w-screen-xl mx-auto  pt-16 lg:pt-24">{children}</div>
     </div>
   );
 }
