@@ -1,5 +1,6 @@
+'use client'
+
 import React from "react";
-import Link from "next/link";
 function Header() {
   return (
     <nav className="bg-white border-b border-gray-200 fixed z-30 w-full">
@@ -97,12 +98,14 @@ function Header() {
                 ></path>
               </svg>
             </button>
-            <Link
+            <button
+              onClick={() => {
+                window.location.href = "/admin/post/create";
+              }}
               className="hidden sm:inline-flex ml-5 rounded-md bg-indigo-600 text-white shadow-sm hover:bg-indigo-500  font-medium text-sm px-5 py-2.5 text-center items-center mr-3"
-              href="/admin/post/create"
             >
               Create new post
-            </Link>
+            </button>
           </div>
         </div>
       </div>

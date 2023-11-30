@@ -1,14 +1,21 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import "@/app/globals.css";
-import utils from "@/utils/utils";
+import { FormInputText } from "@/components/form-components/input-text/FormInputText";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+
+interface IRegisterFormInput {
+  email: string;
+  password: string;
+}
+
 const Register = () => {
   const [error, setError] = useState("");
   const router = useRouter();
-  const { data: session, status: sessionStatus } = useSession();
+  const { status: sessionStatus } = useSession();
 
   useEffect(() => {
     if (sessionStatus === "authenticated") {
@@ -16,21 +23,11 @@ const Register = () => {
     }
   }, [sessionStatus, router]);
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const email = e.target[0].value;
-    const password = e.target[1].value;
+  const { handleSubmit, control } = useForm<IRegisterFormInput>({
+    defaultValues: { email: "", password: "" },
+  });
 
-    if (!utils.string.isValidEmail(email)) {
-      setError("Email is invalid");
-      return;
-    }
-
-    if (!password || password.length < 8) {
-      setError("Password is invalid");
-      return;
-    }
-
+  const onSubmit = async (data: IRegisterFormInput) => {
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
@@ -38,8 +35,8 @@ const Register = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email,
-          password,
+          email: data.email,
+          password: data.password,
         }),
       });
       if (res.status === 400) {
@@ -53,7 +50,6 @@ const Register = () => {
       setError("Error, try again");
     }
   };
-
   if (sessionStatus === "loading") {
     return <h1>Loading...</h1>;
   }
@@ -63,28 +59,37 @@ const Register = () => {
       <div className="flex min-h-screen flex-col items-center justify-between p-24">
         <div className="p-8 rounded shadow-md w-96">
           <h1 className="text-4xl text-center font-semibold mb-8">Register</h1>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
+          <div>
+            <FormInputText
               className="w-full border border-gray-300 text-black rounded px-3 py-2 mb-4 focus:outline-none focus:border-blue-400 focus:text-black"
-              placeholder="Email"
-              required
+              name="email"
+              control={control}
+              label="Email"
+              type="email"
+              required={true}
+              pattern={{
+                value: /\S+@\S+\.\S+/,
+                message: "Entered value does not match email format",
+              }}
             />
-            <input
+            <FormInputText
+              className="w-full border border-gray-300 text-black rounded px-3 py-2 mb-4 focus:outline-none focus:border-blue-400 focus:text-black"
+              name="password"
+              control={control}
+              label="Password"
               type="password"
-              className="w-full border border-gray-300 text-black rounded px-3 py-2 mb-4 focus:outline-none focus:border-blue-400 focus:text-black"
-              placeholder="Password"
-              required
+              required={true}
             />
+
             <button
-              type="submit"
+              onClick={handleSubmit(onSubmit)}
               className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
             >
               {" "}
               Register
             </button>
             <p className="text-red-600 text-[16px] mb-4">{error && error}</p>
-          </form>
+          </div>
           <div className="text-center text-gray-500 mt-4">- OR -</div>
           <Link
             className="block text-center text-blue-500 hover:underline mt-2"

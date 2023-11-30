@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@mdxeditor/editor": "^1.11.2",
+    "@tanstack/eslint-plugin-query": "^5.10.0",
+    "@tanstack/react-query": "^5.10.0",
+    "@tanstack/react-query-devtools": "^5.10.0",
     "bcryptjs": "^2.4.3",
     "date-fns": "^2.30.0",
     "mime": "^3.0.0",
