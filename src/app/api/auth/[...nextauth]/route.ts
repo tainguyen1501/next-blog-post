@@ -1,11 +1,7 @@
-import NextAuth from "next-auth";
-import { Account, User as AuthUser } from "next-auth";
-import GithubProvider from "next-auth/providers/github";
+import NextAuth, { Account, User as AuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-// import bcrypt from "bcryptjs";
-// import User from "@/models/User";
-// import connect from "@/utils/db";
-import repo from '@/db/repo'
+import GithubProvider from "next-auth/providers/github";
+import service from "@/services";
 export const authOptions: any = {
   // Configure one or more authentication providers
   providers: [
@@ -17,20 +13,12 @@ export const authOptions: any = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any) {
-      var adsf = await repo.find('asdfds', {})
-        // await connect();
         try {
-        //   const user = await User.findOne({ email: credentials.email });
-        //   if (user) {
-        //     const isPasswordCorrect = await bcrypt.compare(
-        //       credentials.password,
-        //       user.password
-        //     );
-        //     if (isPasswordCorrect) {
-        //       return user;
-        //     }
-        //   }
-        return null
+          var user = await service.user.login({
+            email: credentials.email,
+            password: credentials.password,
+          });
+          return user;
         } catch (err: any) {
           throw new Error(err);
         }
@@ -53,3 +41,4 @@ export const authOptions: any = {
 
 export const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
+

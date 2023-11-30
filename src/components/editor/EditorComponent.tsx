@@ -1,19 +1,27 @@
-'use client'
+"use client";
 
 import {
-    KitchenSinkToolbar, MDXEditor, MDXEditorMethods, SandpackConfig, codeBlockPlugin,
-    codeMirrorPlugin,
-    diffSourcePlugin, frontmatterPlugin, headingsPlugin, imagePlugin,
-    linkDialogPlugin,
-    linkPlugin,
-    listsPlugin,
-    markdownShortcutPlugin,
-    quotePlugin,
-    sandpackPlugin,
-    tablePlugin,
-    thematicBreakPlugin, toolbarPlugin
-} from "@mdxeditor/editor"
-import { FC, useRef } from 'react'
+  KitchenSinkToolbar,
+  MDXEditor,
+  MDXEditorMethods,
+  SandpackConfig,
+  codeBlockPlugin,
+  codeMirrorPlugin,
+  diffSourcePlugin,
+  frontmatterPlugin,
+  headingsPlugin,
+  imagePlugin,
+  linkDialogPlugin,
+  linkPlugin,
+  listsPlugin,
+  markdownShortcutPlugin,
+  quotePlugin,
+  sandpackPlugin,
+  tablePlugin,
+  thematicBreakPlugin,
+  toolbarPlugin,
+} from "@mdxeditor/editor";
+import { FC, useRef } from "react";
 
 const defaultSnippetContent = `
 export default function App() {
@@ -24,59 +32,59 @@ export default function App() {
     </div>
   );
 }
-`.trim()
+`.trim();
 interface EditorProps {
-  markdown: string
-  editorRef?: React.MutableRefObject<MDXEditorMethods | null>
+  markdown: string;
+  onChange: (arg: string) => void;
 }
 export const virtuosoSampleSandpackConfig: SandpackConfig = {
-  defaultPreset: 'react',
+  defaultPreset: "react",
   presets: [
     {
-      label: 'React',
-      name: 'react',
-      meta: 'live react',
-      sandpackTemplate: 'react',
-      sandpackTheme: 'light',
-      snippetFileName: '/App.js',
-      snippetLanguage: 'jsx',
-      initialSnippetContent: defaultSnippetContent
+      label: "React",
+      name: "react",
+      meta: "live react",
+      sandpackTemplate: "react",
+      sandpackTheme: "light",
+      snippetFileName: "/App.js",
+      snippetLanguage: "jsx",
+      initialSnippetContent: defaultSnippetContent,
     },
     {
-      label: 'React',
-      name: 'react',
-      meta: 'live',
-      sandpackTemplate: 'react',
-      sandpackTheme: 'light',
-      snippetFileName: '/App.js',
-      snippetLanguage: 'jsx',
-      initialSnippetContent: defaultSnippetContent
+      label: "React",
+      name: "react",
+      meta: "live",
+      sandpackTemplate: "react",
+      sandpackTheme: "light",
+      snippetFileName: "/App.js",
+      snippetLanguage: "jsx",
+      initialSnippetContent: defaultSnippetContent,
     },
     {
-      label: 'Virtuoso',
-      name: 'virtuoso',
-      meta: 'live virtuoso',
-      sandpackTemplate: 'react-ts',
-      sandpackTheme: 'light',
-      snippetFileName: '/App.tsx',
+      label: "Virtuoso",
+      name: "virtuoso",
+      meta: "live virtuoso",
+      sandpackTemplate: "react-ts",
+      sandpackTheme: "light",
+      snippetFileName: "/App.tsx",
       initialSnippetContent: defaultSnippetContent,
       dependencies: {
-        'react-virtuoso': 'latest',
-        '@ngneat/falso': 'latest'
+        "react-virtuoso": "latest",
+        "@ngneat/falso": "latest",
       },
       files: {
-        '/data.ts': ''
-      }
-    }
-  ]
-}
+        "/data.ts": "",
+      },
+    },
+  ],
+};
 /**
  * Extend this Component further with the necessary plugins or props you need.
- * proxying the ref is necessary. Next.js dynamically imported components don't support refs. 
-*/
+ * proxying the ref is necessary. Next.js dynamically imported components don't support refs.
+ */
 async function imageUploadHandler(image: File) {
-  const formData = new FormData()
-  formData.append('file', image)
+  const formData = new FormData();
+  formData.append("file", image);
   try {
     const res = await fetch("/api/upload", {
       method: "POST",
@@ -85,46 +93,67 @@ async function imageUploadHandler(image: File) {
 
     if (!res.ok) {
       console.error("something went wrong, check your console.");
-      return '';
+      return "";
     }
     const data: { fileUrl: string } = await res.json();
-    return data.fileUrl
+    return data.fileUrl;
   } catch (error) {
     console.error("something went wrong, check your console.");
   }
-  return ''
+  return "";
 }
 
-const Editor: FC<EditorProps> = ({ markdown, editorRef }) => {
+const Editor: FC<EditorProps> = ({ markdown, onChange }) => {
+  const ref = useRef<MDXEditorMethods>(null);
+  return (
+    <>
+      <button onClick={() => console.log(ref?.current?.getMarkdown())}>
+        Get markdown
+      </button>
+      <button onClick={() => ref?.current?.setMarkdown("new markdown")}>
+        Set new markdown
+      </button>
+      <MDXEditor
+        ref={ref}
+        markdown={markdown}
+        plugins={[
+          toolbarPlugin({
+            toolbarContents: () => (
+              <>
+                <KitchenSinkToolbar />
+              </>
+            ),
+          }),
+          listsPlugin(),
+          quotePlugin(),
+          headingsPlugin({ allowedHeadingLevels: [1, 2, 3] }),
+          linkPlugin(),
+          linkDialogPlugin(),
+          imagePlugin({ imageUploadHandler }),
+          tablePlugin(),
+          thematicBreakPlugin(),
+          frontmatterPlugin(),
+          codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
+          sandpackPlugin({ sandpackConfig: virtuosoSampleSandpackConfig }),
+          codeMirrorPlugin({
+            codeBlockLanguages: {
+              js: "JavaScript",
+              css: "CSS",
+              txt: "text",
+              tsx: "TypeScript",
+            },
+          }),
+          // directivesPlugin({ directiveDescriptors: [YoutubeDirectiveDescriptor, AdmonitionDirectiveDescriptor] }),
+          diffSourcePlugin({
+            viewMode: "rich-text",
+            diffMarkdown: "boo",
+          }),
+          markdownShortcutPlugin(),
+        ]}
+        onChange={onChange}
+      />
+    </>
+  );
+};
 
-    const ref = useRef<MDXEditorMethods>(null)
-  return <>
-     <button onClick={() => console.log(ref?.current?.getMarkdown())}>Get markdown</button>
-     <button onClick={() => ref?.current?.setMarkdown('new markdown')}>Set new markdown</button>
-  <MDXEditor
-   ref={ref}
-    markdown={markdown} 
-  plugins={[
-    toolbarPlugin({ toolbarContents: () => <><KitchenSinkToolbar /></>}),
-    listsPlugin(),
-    quotePlugin(),
-    headingsPlugin({ allowedHeadingLevels: [1, 2, 3] }),
-    linkPlugin(),
-    linkDialogPlugin(),
-    imagePlugin({ imageUploadHandler }),
-    tablePlugin(),
-    thematicBreakPlugin(),
-    frontmatterPlugin(),
-    codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
-    sandpackPlugin({ sandpackConfig: virtuosoSampleSandpackConfig }),
-    codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text', tsx: 'TypeScript' } }),
-    // directivesPlugin({ directiveDescriptors: [YoutubeDirectiveDescriptor, AdmonitionDirectiveDescriptor] }),
-    diffSourcePlugin({ 
-      viewMode: 'rich-text', diffMarkdown: 'boo'}),
-    markdownShortcutPlugin()
-  ]}
-/>
-  </>
-}
-
-export default Editor
+export default Editor;
