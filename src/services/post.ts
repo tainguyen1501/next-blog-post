@@ -12,7 +12,9 @@ const post = {
     const result = await repo.find("post", query);
     return result && result.length > 0 ? result[0] : null;
   },
-
+  getById: async (id: string) => {
+    return await repo.findOne("post", id);
+  },
 };
 
 export default post;

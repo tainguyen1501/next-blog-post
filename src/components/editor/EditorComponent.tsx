@@ -35,7 +35,7 @@ export default function App() {
 `.trim();
 interface EditorProps {
   markdown: string;
-  onChange: (arg: string) => void;
+  onChange?: (arg: string) => void;
 }
 export const virtuosoSampleSandpackConfig: SandpackConfig = {
   defaultPreset: "react",
@@ -102,7 +102,9 @@ async function imageUploadHandler(image: File) {
   }
   return "";
 }
-
+const handleSaveContent = async () => {
+  console.log('sage')
+}
 const Editor: FC<EditorProps> = ({ markdown, onChange }) => {
   const ref = useRef<MDXEditorMethods>(null);
   return (
@@ -121,6 +123,7 @@ const Editor: FC<EditorProps> = ({ markdown, onChange }) => {
             toolbarContents: () => (
               <>
                 <KitchenSinkToolbar />
+                <button className="btn btn-primary" onClick={handleSaveContent}>save</button>
               </>
             ),
           }),
