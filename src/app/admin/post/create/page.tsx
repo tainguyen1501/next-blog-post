@@ -25,20 +25,6 @@ export default function CreatePostPage() {
   return (
     <div className="container" style={{ position: "relative" }}>
       <div className="flex min-h-screen flex-col items-center">
-        <h1>Create new post</h1>
-        <div>
-          <p>Meta title</p>
-          <input className="w-100 form-input h-35" />
-        </div>
-        <div>
-          <p>Meta keywords</p>
-          <input className="w-100 form-input h-35" />
-        </div>
-
-        <div>
-          <p>Meta description</p>
-          <textarea rows={6} className="w-100 form-input"></textarea>
-        </div>
         {slug}
         <input onChange={(e) => handleOnchangeText(e)} />
         <div>

@@ -1,7 +1,10 @@
 
 import user from '@/services/user'
+import post from '@/services/post'
+
 const service = {
-    user
+    user,
+    post
 }
   
 export default service;

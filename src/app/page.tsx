@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import api from "@/apis";
 import CardPost from "@/components/cards/post/CardPost";
@@ -8,7 +8,7 @@ import Hero from "@/components/layout/blogLayout/Hero";
 import { PostModel } from "@/models/post";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-export function Home() {
+export default function Home() {
   const router = useRouter();
   const { isLoading, error, data } = useQuery({
     queryKey: ["fetch-posts"],
@@ -16,7 +16,7 @@ export function Home() {
   });
   const handleSelectedPost = (post: PostModel) => {
     console.log(post);
-    router.push(`/${post.slug || ''}`);
+    router.push(`/${post.slug || ""}`);
   };
   return (
     <>
